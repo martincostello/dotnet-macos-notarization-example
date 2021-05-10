@@ -1,6 +1,6 @@
 #!/bin/bash
 APP_NAME="./HelloWorld.app"
-ENTITLEMENTS="./HelloWorld.entitlements"
+ENTITLEMENTS="./src/HelloWorld/HelloWorld.entitlements"
 
 find "$APP_NAME/Contents/MacOS/"|while read fname; do
     if [[ -f $fname ]]; then

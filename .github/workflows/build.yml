@@ -43,12 +43,6 @@ jobs:
         name: app
         path: ./artifacts/HelloWorld.app
 
-    - name: Publish entitlements
-      uses: actions/upload-artifact@v2
-      with:
-        name: entitlements
-        path: ./src/HelloWorld/HelloWorld.entitlements
-
   notarize:
     name: notarize
     needs: build
@@ -56,16 +50,13 @@ jobs:
 
     steps:
 
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Download app
       uses: actions/download-artifact@v2
       with:
         name: app
-
-    - name: Download entitlements
-      uses: actions/download-artifact@v2
-      with:
-        name: entitlements
-        env:
 
     - name: Select Xcode 12.4
       uses: devbotsxyz/xcode-select@v1

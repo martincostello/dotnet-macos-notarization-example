@@ -95,6 +95,7 @@ jobs:
         ENTITLEMENTS: ./src/HelloWorld/HelloWorld.entitlements
         SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
       run: |
+        chmod +x $APP_NAME/Contents/MacOS/HelloWorld
         find "$APP_NAME/Contents/MacOS/"|while read fname; do
             if [[ -f $fname ]]; then
                 echo "Signing $fname"

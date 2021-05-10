@@ -1,0 +1,65 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+    paths-ignore:
+    - '**/*.md'
+    - '**/*.gitignore'
+    - '**/*.gitattributes'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: false
+  DOTNET_MULTILEVEL_LOOKUP: 0
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  NUGET_XMLDOC_MODE: skip
+
+jobs:
+  build:
+    name: build
+    runs-on: macos-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1
+
+    - name: Build and publish
+      shell: pwsh
+      run: ./build.ps1
+
+    - name: Publish app
+      uses: actions/upload-artifact@v2
+      with:
+        name: app
+        path: ./artifacts
+
+  release:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    name: release
+    needs: build
+    runs-on: macos-latest
+
+    steps:
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: app
+
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        files: '*.zip'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

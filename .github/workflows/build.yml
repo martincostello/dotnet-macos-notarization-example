@@ -13,11 +13,14 @@ on:
   workflow_dispatch:
 
 env:
+  ARTIFACTS_PATH: ./artifacts
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_GENERATE_ASPNET_CERTIFICATE: false
   DOTNET_MULTILEVEL_LOOKUP: 0
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  MACOS_APP_NAME: HelloWorld.app
+  MACOS_APP_PATH: ./artifacts/HelloWorld.app
   NUGET_XMLDOC_MODE: skip
 
 jobs:
@@ -37,7 +40,40 @@ jobs:
       shell: pwsh
       run: ./build.ps1
 
-    - name: Select Xcode 12.4
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: app
+        path: ${{ env.ARTIFACTS_PATH }}
+
+  notarize:
+    name: notarize
+    runs-on: macos-latest
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: app
+        path: ${{ env.ARTIFACTS_PATH }}
+
+    - name: Generate macOS app
+      shell: pwsh
+      run: |
+        $Artifacts = "${{ env.ARTIFACTS_PATH }}"
+        $AppName = "${{ env.MACOS_APP_NAME }}"
+        $AppPath = "${{ env.MACOS_APP_PATH }}"
+        $ContentsPath = (Join-Path ${AppPath} "Contents")
+        $PublishPath = (Join-Path ${Artifacts} "publish")
+        New-Item -Path ${Artifacts} -Name ${AppName} -ItemType "Directory" | Out-Null
+        New-Item -Path ${AppPath} -Name "Contents" -ItemType "Directory" | Out-Null
+        New-Item -Path ${ContentsPath} -Name "Resources" -ItemType "Directory" | Out-Null
+        Copy-Item -Path ${PublishPath} -Destination (Join-Path ${ContentsPath} "MacOS") -Recurse | Out-Null
+        Copy-Item -Path ./src/HelloWorld/Info.plist -Destination ${ContentsPath} | Out-Null
+
+    - name: Configure Xcode
       uses: devbotsxyz/xcode-select@v1
       with:
         version: "12.4"
@@ -51,35 +87,45 @@ jobs:
 
     - name: Sign app
       shell: bash
-      run: ./sign.sh
       env:
+        APP_NAME: ${{ env.MACOS_APP_PATH }}
+        ENTITLEMENTS: ./src/HelloWorld/HelloWorld.entitlements
         SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+      run: |
+        find "$APP_NAME/Contents/MacOS/"|while read fname; do
+            if [[ -f $fname ]]; then
+                echo "Signing $fname"
+                codesign --force --timestamp --options=runtime --entitlements "$ENTITLEMENTS" --sign "$SIGNING_IDENTITY" "$fname"
+            fi
+        done
+        echo "Signing app file"
+        codesign --force --timestamp --options=runtime --entitlements "$ENTITLEMENTS" --sign "$SIGNING_IDENTITY" "$APP_NAME"
 
     - name: Notarize app
       uses: devbotsxyz/xcode-notarize@v1
       with:
-        product-path: ./artifacts/HelloWorld.app
+        product-path: ${{ env.MACOS_APP_PATH }}
         appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
         appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
 
     - name: Staple app
       uses: devbotsxyz/xcode-staple@v1
       with:
-        product-path: ./artifacts/HelloWorld.app
+        product-path: ${{ env.MACOS_APP_PATH }}
 
     - name: Package signed app
-      run: ditto -V -c -k --keepParent ./artifacts/HelloWorld.app ./artifacts/HelloWorld.zip
+      run: ditto -V -c -k --keepParent ${{ env.MACOS_APP_PATH }} ./artifacts/HelloWorld-osx-x64.zip
 
     - name: Publish signed app
       uses: actions/upload-artifact@v2
       with:
         name: app-signed
-        path: ./artifacts/HelloWorld.zip
+        path: ./artifacts/HelloWorld-osx-x64.zip
 
   release:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     name: release
-    needs: build
+    needs: notarize
     runs-on: macos-latest
 
     steps:

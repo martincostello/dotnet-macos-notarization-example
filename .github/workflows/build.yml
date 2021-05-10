@@ -55,10 +55,10 @@ jobs:
       with:
         name: app
 
-    - name: Select Xcode 12.0.0
+    - name: Select Xcode 12.4
       uses: devbotsxyz/xcode-select@v1
       with:
-        version: "12.0.0"
+        version: "12.4"
 
     - name: Import Distribution Certificate
       uses: devbotsxyz/import-signing-certificate@v1

@@ -45,6 +45,7 @@ jobs:
 
   notarize:
     name: notarize
+    needs: build
     runs-on: macos-latest
 
     steps:

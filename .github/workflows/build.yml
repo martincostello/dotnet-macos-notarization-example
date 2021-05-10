@@ -71,7 +71,7 @@ jobs:
       uses: devbotsxyz/xcode-archive@v1
 
     - name: Export and sign app
-      uses: devbotsxyz/xcode-export-archive@v1
+      uses: devbotsxyz/xcode-export-archive@v1.0.0
 
     - name: Notarize app
       uses: devbotsxyz/xcode-notarize@v1

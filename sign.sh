@@ -1,5 +1,5 @@
 #!/bin/bash
-APP_NAME="./HelloWorld.app"
+APP_NAME="./artifacts/HelloWorld.app"
 ENTITLEMENTS="./src/HelloWorld/HelloWorld.entitlements"
 
 find "$APP_NAME/Contents/MacOS/"|while read fname; do

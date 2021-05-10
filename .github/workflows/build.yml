@@ -37,27 +37,6 @@ jobs:
       shell: pwsh
       run: ./build.ps1
 
-    - name: Publish app
-      uses: actions/upload-artifact@v2
-      with:
-        name: app
-        path: ./artifacts/HelloWorld.app
-
-  notarize:
-    name: notarize
-    needs: build
-    runs-on: macos-latest
-
-    steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Download app
-      uses: actions/download-artifact@v2
-      with:
-        name: app
-
     - name: Select Xcode 12.4
       uses: devbotsxyz/xcode-select@v1
       with:
@@ -79,28 +58,28 @@ jobs:
     - name: Notarize app
       uses: devbotsxyz/xcode-notarize@v1
       with:
-        product-path: ./HelloWorld.app
+        product-path: ./artifacts/HelloWorld.app
         appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
         appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
 
     - name: Staple app
       uses: devbotsxyz/xcode-staple@v1
       with:
-        product-path: ./Export/HelloWorld.app
+        product-path: ./artifacts/HelloWorld.app
 
     - name: Package signed app
-      run: ditto -V -c -k --keepParent ./Export/HelloWorld.app ./HelloWorld.zip
+      run: ditto -V -c -k --keepParent ./artifacts/HelloWorld.app ./artifacts/HelloWorld.zip
 
     - name: Publish signed app
       uses: actions/upload-artifact@v2
       with:
         name: app-signed
-        path: ./HelloWorld.zip
+        path: ./artifacts/HelloWorld.zip
 
   release:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     name: release
-    needs: notarize
+    needs: build
     runs-on: macos-latest
 
     steps:

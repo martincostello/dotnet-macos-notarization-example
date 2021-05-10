@@ -2,7 +2,10 @@
 
 dotnet publish ./src/HelloWorld/HelloWorld.csproj --output ./artifacts/app --configuration Release --runtime osx-x64
 
-Remove-Item ./artifacts/HelloWorld.app -Recurse -Force | Out-Null
+if (Test-Path -Path ./artifacts/HelloWorld.app) {
+    Remove-Item ./artifacts/HelloWorld.app -Recurse -Force | Out-Null
+}
+
 New-Item -Path ./artifacts -Name HelloWorld.app -ItemType "Directory" | Out-Null
 New-Item -Path ./artifacts/HelloWorld.app -Name Contents -ItemType "Directory" | Out-Null
 New-Item -Path ./artifacts/HelloWorld.app/Contents -Name Resources -ItemType "Directory" | Out-Null

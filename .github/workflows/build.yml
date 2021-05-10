@@ -43,6 +43,12 @@ jobs:
         name: app
         path: ./artifacts/HelloWorld.app
 
+    - name: Publish entitlements
+      uses: actions/upload-artifact@v2
+      with:
+        name: entitlements
+        path: ./src/HelloWorld/HelloWorld.entitlements
+
   notarize:
     name: notarize
     needs: build
@@ -54,6 +60,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: app
+
+    - name: Download entitlements
+      uses: actions/download-artifact@v2
+      with:
+        name: entitlements
+        env:
 
     - name: Select Xcode 12.4
       uses: devbotsxyz/xcode-select@v1
@@ -67,16 +79,16 @@ jobs:
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
         keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
 
-    - name: Archive app
-      uses: devbotsxyz/xcode-archive@v1
-
-    - name: Export and sign app
-      uses: devbotsxyz/xcode-export-archive@v1.0.0
+    - name: Sign app
+      shell: bash
+      run: ./sign.sh
+      env:
+        SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
 
     - name: Notarize app
       uses: devbotsxyz/xcode-notarize@v1
       with:
-        product-path: ./Export/HelloWorld.app
+        product-path: ./HelloWorld.app
         appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
         appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
 

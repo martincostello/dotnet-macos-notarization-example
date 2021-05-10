@@ -98,7 +98,7 @@ jobs:
         find "$APP_NAME/Contents/MacOS/"|while read fname; do
             if [[ -f $fname ]]; then
                 echo "Signing $fname"
-                codesign --force --timestamp --options=runtime --entitlements "$ENTITLEMENTS" --sign "$SIGNING_IDENTITY" "$fname"
+                codesign --force --timestamp --options=runtime --entitlements "$ENTITLEMENTS" --sign "$SIGNING_IDENTITY" "$fname" || true
             fi
         done
         echo "Signing app file"

@@ -1,0 +1,27 @@
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{config,csproj,css,js,json,props,ruleset,targets,vsconfig,xml,yml}]
+indent_size = 2
+
+[*.{cs,csx,vb,vbx}]
+charset = utf-8-bom
+
+[*.plist]
+indent_style = tab
+
+[*.sln]
+charset = unset
+end_of_line = unset
+indent_size = unset
+indent_style = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset

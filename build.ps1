@@ -4,4 +4,4 @@ dotnet publish `
        --output ./artifacts/publish `
        --configuration Release `
        --runtime osx-x64 `
-       --no-self-contained
+       --self-contained

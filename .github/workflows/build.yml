@@ -31,7 +31,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v2
@@ -41,7 +41,7 @@ jobs:
       run: ./build.ps1
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: app
         path: ${{ env.ARTIFACTS_PATH }}
@@ -54,10 +54,10 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Download artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: app
         path: ${{ env.ARTIFACTS_PATH }}
@@ -121,7 +121,7 @@ jobs:
       run: ditto -V -c -k --keepParent ${{ env.MACOS_APP_PATH }} ./artifacts/HelloWorld-osx-x64.zip
 
     - name: Publish signed app
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: app-signed
         path: ./artifacts/HelloWorld-osx-x64.zip
@@ -135,7 +135,7 @@ jobs:
     steps:
 
     - name: Download signed app
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: app-signed
 

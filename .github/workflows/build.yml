@@ -47,6 +47,7 @@ jobs:
         path: ${{ env.ARTIFACTS_PATH }}
 
   notarize:
+    if: ${{ github.repository_owner == 'martincostello' }}
     name: notarize
     needs: build
     runs-on: macos-latest

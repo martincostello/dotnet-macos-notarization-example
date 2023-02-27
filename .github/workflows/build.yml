@@ -80,7 +80,7 @@ jobs:
     - name: Configure Xcode
       uses: devbotsxyz/xcode-select@v1
       with:
-        version: "12.4"
+        version: "13.1"
 
     - name: Import Distribution Certificate
       uses: devbotsxyz/import-signing-certificate@v1

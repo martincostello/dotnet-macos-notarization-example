@@ -96,15 +96,15 @@ jobs:
         ENTITLEMENTS: ./src/HelloWorld/HelloWorld.entitlements
         SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
       run: |
-        chmod +x $APP_NAME/Contents/MacOS/HelloWorld
-        find "$APP_NAME/Contents/MacOS/"|while read fname; do
-            if [[ -f $fname ]]; then
-                echo "Signing $fname"
-                codesign --force --timestamp --options=runtime --entitlements "$ENTITLEMENTS" --sign "$SIGNING_IDENTITY" "$fname" || true
+        chmod +x "${APP_NAME}/Contents/MacOS/HelloWorld"
+        find "${APP_NAME}/Contents/MacOS/" | while read fname -f; do
+            if [[ -f "${fname}" ]]; then
+                echo "Signing ${fname}"
+                codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${fname}" || true
             fi
         done
         echo "Signing app file"
-        codesign --force --timestamp --options=runtime --entitlements "$ENTITLEMENTS" --sign "$SIGNING_IDENTITY" "$APP_NAME"
+        codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${APP_NAME}"
 
     - name: Notarize app
       uses: devbotsxyz/xcode-notarize@v1

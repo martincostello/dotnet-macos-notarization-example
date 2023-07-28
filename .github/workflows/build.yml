@@ -97,7 +97,7 @@ jobs:
         SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
       run: |
         chmod +x "${APP_NAME}/Contents/MacOS/HelloWorld"
-        find "${APP_NAME}/Contents/MacOS/" | while read fname -r; do
+        find "${APP_NAME}/Contents/MacOS/" | while read fname; do
             if [[ -f "${fname}" ]]; then
                 echo "Signing ${fname}"
                 codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${fname}" || true

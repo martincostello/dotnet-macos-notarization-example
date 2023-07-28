@@ -83,7 +83,7 @@ jobs:
         version: "13.1"
 
     - name: Import Distribution Certificate
-      uses: martincostello/import-signing-certificate@node-16
+      uses: martincostello/import-signing-certificate@018da68ea5b9f7c0302bfb168dda0af22b4a54ca
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}

@@ -78,12 +78,12 @@ jobs:
         Copy-Item -Path ./src/HelloWorld/Info.plist -Destination ${ContentsPath} | Out-Null
 
     - name: Configure Xcode
-      uses: devbotsxyz/xcode-select@v1
+      uses: martincostello/xcode-select@node16
       with:
         version: "13.1"
 
     - name: Import Distribution Certificate
-      uses: devbotsxyz/import-signing-certificate@v1
+      uses: martincostello/import-signing-certificate@node16
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
@@ -107,14 +107,14 @@ jobs:
         codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${APP_NAME}"
 
     - name: Notarize app
-      uses: devbotsxyz/xcode-notarize@v1
+      uses: martincostello/xcode-notarize@node16
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
         appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
         appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
 
     - name: Staple app
-      uses: devbotsxyz/xcode-staple@v1
+      uses: martincostello/xcode-staple@node16
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
 

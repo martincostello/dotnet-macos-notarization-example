@@ -83,7 +83,7 @@ jobs:
         version: "13.1"
 
     - name: Import Distribution Certificate
-      uses: martincostello/import-signing-certificate@018da68ea5b9f7c0302bfb168dda0af22b4a54ca
+      uses: martincostello/import-signing-certificate@d12c9f7efbd059fec79524ada59637fd4e24d8b2
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
@@ -114,7 +114,7 @@ jobs:
         appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
 
     - name: Staple app
-      uses: martincostello/xcode-staple@node-16
+      uses: martincostello/xcode-staple@f233525043d349381c62b2b2ddce6ad0fce2076a
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
 

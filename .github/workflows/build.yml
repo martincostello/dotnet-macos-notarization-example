@@ -41,7 +41,7 @@ jobs:
       run: ./build.ps1
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app
         path: ${{ env.ARTIFACTS_PATH }}
@@ -121,7 +121,7 @@ jobs:
       run: ditto -V -c -k --keepParent "${MACOS_APP_PATH}" ./artifacts/HelloWorld-osx-x64.zip
 
     - name: Publish signed app
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app-signed
         path: ./artifacts/HelloWorld-osx-x64.zip

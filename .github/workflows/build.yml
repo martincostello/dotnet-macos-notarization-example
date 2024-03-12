@@ -47,7 +47,7 @@ jobs:
         path: ${{ env.ARTIFACTS_PATH }}
 
   notarize:
-    if: github.event.repository.fork == false
+    if: github.event.repository.fork == false && github.triggering_actor != 'dependabot[bot]'
     name: notarize
     needs: build
     runs-on: macos-latest
@@ -86,6 +86,7 @@ jobs:
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
+        keychain-name: ''
         keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
 
     - name: Sign app

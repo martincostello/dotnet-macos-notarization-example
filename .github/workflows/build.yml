@@ -107,11 +107,12 @@ jobs:
         codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${APP_NAME}"
 
     - name: Notarize app
-      uses: martincostello/xcode-notarize@node20
+      uses: martincostello/xcode-notarize@notarytool
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
-        appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
-        appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
+        apple-id: ${{ secrets.NOTARIZATION_USERNAME }}
+        app-password: ${{ secrets.NOTARIZATION_PASSWORD }}
+        team-id: ${{ secrets.NOTARIZATION_TEAM_ID }}
 
     - name: Staple app
       uses: martincostello/xcode-staple@node20

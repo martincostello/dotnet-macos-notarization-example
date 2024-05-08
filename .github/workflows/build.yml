@@ -79,7 +79,7 @@ jobs:
     - name: Configure Xcode
       uses: martincostello/xcode-select@node20
       with:
-        version: "13.1"
+        version: "15.3"
 
     - name: Import Distribution Certificate
       uses: martincostello/import-signing-certificate@node20

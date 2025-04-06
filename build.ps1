@@ -1,7 +1,7 @@
 #! /usr/bin/env pwsh
 dotnet publish `
-       ./src/HelloWorld/HelloWorld.csproj `
-       --output ./artifacts/publish `
-       --configuration Release `
-       --runtime osx-x64 `
-       --self-contained
+  ./src/HelloWorld/HelloWorld.csproj `
+  --output ./artifacts/publish `
+  --configuration Release `
+  --runtime osx-x64 `
+  --self-contained

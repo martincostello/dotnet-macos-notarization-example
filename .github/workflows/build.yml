@@ -45,7 +45,7 @@ jobs:
         path: ${{ env.ARTIFACTS_PATH }}
 
   notarize:
-    if: github.event.repository.fork == false && github.triggering_actor != 'dependabot[bot]'
+    if: github.event.repository.fork == false && !contains('["dependabot[bot]", "github-actions[bot]", "renovate[bot]"]', github.triggering_actor)
     name: notarize
     needs: build
     runs-on: macos-latest

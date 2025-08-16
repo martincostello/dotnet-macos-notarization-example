@@ -21,10 +21,15 @@ env:
   MACOS_APP_PATH: ./artifacts/HelloWorld.app
   NUGET_XMLDOC_MODE: skip
 
+permissions: {}
+
 jobs:
   build:
     name: build
     runs-on: macos-latest
+
+    permissions:
+      contents: read
 
     steps:
 
@@ -49,10 +54,14 @@ jobs:
         path: ${{ env.ARTIFACTS_PATH }}
 
   notarize:
-    if: github.event.repository.fork == false && !contains('["dependabot[bot]", "github-actions[bot]", "renovate[bot]"]', github.triggering_actor)
-    name: notarize
     needs: build
     runs-on: macos-latest
+    if: |
+      github.event.repository.fork == false &&
+      !contains(fromJSON('["dependabot[bot]", "github-actions[bot]", "renovate[bot]"]'), github.event.pull_request.user.login)
+
+    permissions:
+      contents: read
 
     steps:
 
@@ -139,6 +148,9 @@ jobs:
     name: release
     needs: notarize
     runs-on: macos-latest
+
+    permissions:
+      contents: write
 
     steps:
 

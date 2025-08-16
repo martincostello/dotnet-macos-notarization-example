@@ -21,42 +21,59 @@ env:
   MACOS_APP_PATH: ./artifacts/HelloWorld.app
   NUGET_XMLDOC_MODE: skip
 
+permissions: {}
+
 jobs:
   build:
     name: build
     runs-on: macos-latest
 
+    permissions:
+      contents: read
+
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        filter: 'tree:0'
+        persist-credentials: false
+        show-progress: false
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
 
     - name: Build and publish
       shell: pwsh
       run: ./build.ps1
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: app
         path: ${{ env.ARTIFACTS_PATH }}
 
   notarize:
-    if: github.event.repository.fork == false && !contains('["dependabot[bot]", "github-actions[bot]", "renovate[bot]"]', github.triggering_actor)
-    name: notarize
     needs: build
     runs-on: macos-latest
+    if: |
+      github.event.repository.fork == false &&
+      !contains(fromJSON('["dependabot[bot]", "github-actions[bot]", "renovate[bot]"]'), github.event.pull_request.user.login)
+
+    permissions:
+      contents: read
 
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        filter: 'tree:0'
+        persist-credentials: false
+        show-progress: false
 
     - name: Download artifacts
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: app
         path: ${{ env.ARTIFACTS_PATH }}
@@ -75,12 +92,12 @@ jobs:
         Copy-Item -Path ./src/HelloWorld/Info.plist -Destination ${ContentsPath} | Out-Null
 
     - name: Configure Xcode
-      uses: martincostello/xcode-select@node20
+      uses: martincostello/xcode-select@db3d404e6e20374a638c10a68e3d804977ec19cb # node20
       with:
         version: "15.3"
 
     - name: Import Distribution Certificate
-      uses: martincostello/import-signing-certificate@node20
+      uses: martincostello/import-signing-certificate@a80a8cdd27ba2b00e0e80480fb66c4149de04061 # node20
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
@@ -105,7 +122,7 @@ jobs:
         codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${APP_NAME}"
 
     - name: Notarize app
-      uses: martincostello/xcode-notarize@notarytool
+      uses: martincostello/xcode-notarize@b461d5783f3d2e7f94e71296e42804b1f81a9dc7 # zizmor: ignore[stale-action-refs] Points to notarytool branch of deprecated action
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
         apple-id: ${{ secrets.NOTARIZATION_USERNAME }}
@@ -113,7 +130,7 @@ jobs:
         team-id: ${{ secrets.NOTARIZATION_TEAM_ID }}
 
     - name: Staple app
-      uses: martincostello/xcode-staple@node20
+      uses: martincostello/xcode-staple@6961e581904dea5b988186057568c92667fb03a1 # node20
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
 
@@ -121,7 +138,7 @@ jobs:
       run: ditto -V -c -k --keepParent "${MACOS_APP_PATH}" ./artifacts/HelloWorld-osx-x64.zip
 
     - name: Publish signed app
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: app-signed
         path: ./artifacts/HelloWorld-osx-x64.zip
@@ -132,15 +149,18 @@ jobs:
     needs: notarize
     runs-on: macos-latest
 
+    permissions:
+      contents: write
+
     steps:
 
     - name: Download signed app
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
       with:
         name: app-signed
 
     - name: Create GitHub release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:

@@ -130,7 +130,7 @@ jobs:
         team-id: ${{ secrets.NOTARIZATION_TEAM_ID }}
 
     - name: Staple app
-      uses: martincostello/xcode-staple@6961e581904dea5b988186057568c92667fb03a1 # node20
+      uses: martincostello/xcode-staple@2114e06658d8492882b252406aaa7fee3e75ed85 # node20
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
 

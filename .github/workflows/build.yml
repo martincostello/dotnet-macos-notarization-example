@@ -97,7 +97,7 @@ jobs:
         version: "15.3"
 
     - name: Import Distribution Certificate
-      uses: martincostello/import-signing-certificate@a80a8cdd27ba2b00e0e80480fb66c4149de04061 # node20
+      uses: martincostello/import-signing-certificate@2ac4f44d28045073d23153256efbb4c4b2d8aa22 # node20
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}

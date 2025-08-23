@@ -92,7 +92,7 @@ jobs:
         Copy-Item -Path ./src/HelloWorld/Info.plist -Destination ${ContentsPath} | Out-Null
 
     - name: Configure Xcode
-      uses: martincostello/xcode-select@db3d404e6e20374a638c10a68e3d804977ec19cb # node20
+      uses: martincostello/xcode-select@8d145f460725efd3e41b1963af0cb78f724b2ebe # node20
       with:
         version: "15.3"
 

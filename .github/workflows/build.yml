@@ -160,9 +160,8 @@ jobs:
         name: app-signed
 
     - name: Create GitHub release
-      uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+      shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        draft: true
-        files: '*.zip'
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create "${GITHUB_REF_NAME}" "*.zip" --draft --generate-notes --repo "${GITHUB_REPOSITORY}"

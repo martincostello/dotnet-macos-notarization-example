@@ -96,12 +96,12 @@ jobs:
         Copy-Item -Path ./src/HelloWorld/Info.plist -Destination ${ContentsPath} | Out-Null
 
     - name: Configure Xcode
-      uses: martincostello/xcode-select@db3d404e6e20374a638c10a68e3d804977ec19cb # node20
+      uses: martincostello/xcode-select@c47a534da51e7bf0b6e615e4fd656239bc6921e9 # node-24
       with:
         version: "26.5"
 
     - name: Import Distribution Certificate
-      uses: martincostello/import-signing-certificate@a80a8cdd27ba2b00e0e80480fb66c4149de04061 # node20
+      uses: martincostello/import-signing-certificate@f1ddd468fc062c21a26ac949000c97a62ae528b2 # node-24
       with:
         certificate-data: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
         certificate-passphrase: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
@@ -134,7 +134,7 @@ jobs:
         team-id: ${{ secrets.NOTARIZATION_TEAM_ID }}
 
     - name: Staple app
-      uses: martincostello/xcode-staple@6961e581904dea5b988186057568c92667fb03a1 # node20
+      uses: martincostello/xcode-staple@4e4f28c261bee6afa32b137709cdd33242334ba1 # node-24
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
 

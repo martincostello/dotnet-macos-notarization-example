@@ -126,7 +126,7 @@ jobs:
         codesign --force --timestamp --options=runtime --entitlements "${ENTITLEMENTS}" --sign "${SIGNING_IDENTITY}" "${APP_NAME}"
 
     - name: Notarize app
-      uses: martincostello/xcode-notarize@b461d5783f3d2e7f94e71296e42804b1f81a9dc7 # zizmor: ignore[stale-action-refs] Points to notarytool branch of deprecated action
+      uses: martincostello/xcode-notarize@31dc26aa00c957bf07f29054294471cc619062a2 # notarytool-node-24
       with:
         product-path: ${{ env.MACOS_APP_PATH }}
         apple-id: ${{ secrets.NOTARIZATION_USERNAME }}
